@@ -53,10 +53,18 @@ class BeerControllerTest {
         BDDMockito.given(beerRepository.findById(any(UUID.class))).willReturn(Optional.of(beer));
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/beer/{beerId}/", UUID.randomUUID().toString())
+            //this controller does not take any parameter, but for our goal - to demonstrate we adding 'isCold' parameter
+            .param("isCold", "yes")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andDo(MockMvcRestDocumentation.document("v1/beer",
-                RequestDocumentation.pathParameters(RequestDocumentation.parameterWithName("beerId").description("UUID of desired beer to get"))));
+                RequestDocumentation.pathParameters(
+                    RequestDocumentation.parameterWithName("beerId").description("UUID of desired beer to get")
+                ),
+                RequestDocumentation.requestParameters(
+                    RequestDocumentation.parameterWithName("isCold").description("Is beer cold query param?")
+                )
+            ));
 
     }
 
