@@ -92,7 +92,25 @@ class BeerControllerTest {
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/beer/")
             .contentType(MediaType.APPLICATION_JSON)
             .content(beerDtoJson))
-            .andExpect(status().isCreated());
+            .andExpect(status().isCreated())
+            .andDo(MockMvcRestDocumentation.document("v1/beer",
+                PayloadDocumentation.requestFields(
+                    //and again we need to pass all required fields for BeerDto or explicitly specify field to be ignored
+                    //four fields are specified as ignored, API users should never send those
+                    // others are modifiable and should be passed
+                    PayloadDocumentation.fieldWithPath("id").ignored(),
+                    PayloadDocumentation.fieldWithPath("version").ignored(),
+                    PayloadDocumentation.fieldWithPath("createdDate").ignored(),
+                    PayloadDocumentation.fieldWithPath("lastModifiedDate").ignored(),
+                    PayloadDocumentation.fieldWithPath("beerName").description("beerName of beer"),
+                    PayloadDocumentation.fieldWithPath("beerStyle").description("beerStyle of beer"),
+                    PayloadDocumentation.fieldWithPath("upc").description("upc of beer").attributes(),
+                    PayloadDocumentation.fieldWithPath("price").description("price of beer"),
+                    //this will be maintained by backend system API
+                    PayloadDocumentation.fieldWithPath("quantityOnHand").ignored()
+                )
+                )
+            );
 
     }
 
