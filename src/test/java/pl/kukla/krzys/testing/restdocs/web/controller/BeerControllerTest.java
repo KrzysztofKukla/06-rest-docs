@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import pl.kukla.krzys.testing.restdocs.domain.Beer;
@@ -63,8 +64,22 @@ class BeerControllerTest {
                 ),
                 RequestDocumentation.requestParameters(
                     RequestDocumentation.parameterWithName("isCold").description("Is beer cold query param?")
+                ),
+                //in response we will receive whole BeerDto object which contains id, version, createdDate etc. parameters
+                //to make this test passed, we need to specify all parameters for BeerDto
+                PayloadDocumentation.responseFields(
+                    PayloadDocumentation.fieldWithPath("id").description("Id of beer"),
+                    PayloadDocumentation.fieldWithPath("version").description("version of beer"),
+                    PayloadDocumentation.fieldWithPath("createdDate").description("createdDate of beer"),
+                    PayloadDocumentation.fieldWithPath("lastModifiedDate").description("lastModifiedDate of beer"),
+                    PayloadDocumentation.fieldWithPath("beerName").description("beerName of beer"),
+                    PayloadDocumentation.fieldWithPath("beerStyle").description("beerStyle of beer"),
+                    PayloadDocumentation.fieldWithPath("upc").description("upc of beer"),
+                    PayloadDocumentation.fieldWithPath("price").description("price of beer"),
+                    PayloadDocumentation.fieldWithPath("quantityOnHand").description("quantityOnHand of beer")
                 )
-            ));
+                )
+            );
 
     }
 
