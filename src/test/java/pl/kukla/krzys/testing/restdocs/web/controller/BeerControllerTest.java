@@ -11,8 +11,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pl.kukla.krzys.testing.restdocs.domain.Beer;
 import pl.kukla.krzys.testing.restdocs.repository.BeerRepository;
 import pl.kukla.krzys.testing.restdocs.web.model.BeerDto;
@@ -23,14 +25,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * @author Krzysztof Kukla
  */
-//autoonfiguration REST docs for us
+//autoconfiguration REST docs for us
 @ExtendWith(value = RestDocumentationExtension.class) //we need to add SpringExtension as well, but this is done int @WebMvcTest
 @AutoConfigureRestDocs
 @WebMvcTest(controllers = BeerController.class)
@@ -52,9 +52,11 @@ class BeerControllerTest {
         Beer beer = Beer.builder().build();
         BDDMockito.given(beerRepository.findById(any(UUID.class))).willReturn(Optional.of(beer));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/beer/" + UUID.randomUUID().toString())
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/beer/{beerId}/", UUID.randomUUID().toString())
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andDo(MockMvcRestDocumentation.document("v1/beer",
+                RequestDocumentation.pathParameters(RequestDocumentation.parameterWithName("beerId").description("UUID of desired beer to get"))));
 
     }
 
@@ -64,7 +66,7 @@ class BeerControllerTest {
 
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
-        mockMvc.perform(post("/api/v1/beer/")
+        mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/beer/")
             .contentType(MediaType.APPLICATION_JSON)
             .content(beerDtoJson))
             .andExpect(status().isCreated());
@@ -77,7 +79,7 @@ class BeerControllerTest {
 
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
-        mockMvc.perform(put("/api/v1/beer/" + UUID.randomUUID())
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/v1/beer/" + UUID.randomUUID())
             .contentType(MediaType.APPLICATION_JSON)
             .content(beerDtoJson))
             .andExpect(status().isNoContent());
