@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.UUID;
@@ -37,6 +38,7 @@ public class BeerDto {
     private OffsetDateTime lastModifiedDate;
 
     @NotBlank
+    @Size(min = 3, max = 100)
     private String beerName;
 
     @NotNull
@@ -50,6 +52,7 @@ public class BeerDto {
     @NotNull
     private BigDecimal price;
 
+    @Positive
     private Integer quantityOnHand;
 
 }

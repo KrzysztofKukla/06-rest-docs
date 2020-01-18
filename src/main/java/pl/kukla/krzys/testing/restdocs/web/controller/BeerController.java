@@ -3,20 +3,24 @@ package pl.kukla.krzys.testing.restdocs.web.controller;
 /**
  * @author Krzysztof Kukla
  */
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import pl.kukla.krzys.testing.restdocs.repository.BeerRepository;
 import pl.kukla.krzys.testing.restdocs.web.mapper.BeerMapper;
 import pl.kukla.krzys.testing.restdocs.web.model.BeerDto;
 
 import java.util.UUID;
 
-/**
- * Created by jt on 2019-05-12.
- */
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/beer")
 @RestController

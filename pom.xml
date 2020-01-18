@@ -137,7 +137,7 @@
 				<artifactId>asciidoctor-maven-plugin</artifactId>
 				<version>1.5.3</version>
 				<executions>
-					<!-- it will be call before package stage in maven goals -->
+					<!-- it will be call before during 'package' goal in maven  -->
 					<execution>
 						<id>generate-docs</id>
 						<phase>prepare-package</phase>

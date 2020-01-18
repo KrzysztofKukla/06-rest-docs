@@ -11,11 +11,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.constraints.ConstraintDescriptions;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.restdocs.request.RequestDocumentation;
+import org.springframework.restdocs.snippet.Attributes;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.StringUtils;
 import pl.kukla.krzys.testing.restdocs.domain.Beer;
 import pl.kukla.krzys.testing.restdocs.repository.BeerRepository;
 import pl.kukla.krzys.testing.restdocs.web.model.BeerDto;
@@ -86,8 +90,9 @@ class BeerControllerTest {
     @Test
     void saveNewBeer() throws Exception {
         BeerDto beerDto = createBeerDto();
-
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
+
+        ConstrainedFields fields = new ConstrainedFields(BeerDto.class);
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/beer/")
             .contentType(MediaType.APPLICATION_JSON)
@@ -98,16 +103,16 @@ class BeerControllerTest {
                     //and again we need to pass all required fields for BeerDto or explicitly specify field to be ignored
                     //four fields are specified as ignored, API users should never send those
                     // others are modifiable and should be passed
-                    PayloadDocumentation.fieldWithPath("id").ignored(),
-                    PayloadDocumentation.fieldWithPath("version").ignored(),
-                    PayloadDocumentation.fieldWithPath("createdDate").ignored(),
-                    PayloadDocumentation.fieldWithPath("lastModifiedDate").ignored(),
-                    PayloadDocumentation.fieldWithPath("beerName").description("beerName of beer"),
-                    PayloadDocumentation.fieldWithPath("beerStyle").description("beerStyle of beer"),
-                    PayloadDocumentation.fieldWithPath("upc").description("upc of beer").attributes(),
-                    PayloadDocumentation.fieldWithPath("price").description("price of beer"),
+                    fields.withPath("id").ignored(),
+                    fields.withPath("version").ignored(),
+                    fields.withPath("createdDate").ignored(),
+                    fields.withPath("lastModifiedDate").ignored(),
+                    fields.withPath("beerName").description("beerName of beer"),
+                    fields.withPath("beerStyle").description("beerStyle of beer"),
+                    fields.withPath("upc").description("upc of beer").attributes(),
+                    fields.withPath("price").description("price of beer"),
                     //this will be maintained by backend system API
-                    PayloadDocumentation.fieldWithPath("quantityOnHand").ignored()
+                    fields.withPath("quantityOnHand").ignored()
                 )
                 )
             );
@@ -133,6 +138,24 @@ class BeerControllerTest {
             .price(new BigDecimal("9.99"))
             .upc(12345678L)
             .build();
+    }
+
+    //we added 'constraints' to 'test/resources/org/springframework/restdocs/templates/request-fields.snippet' file
+    //so we need to specify that field here
+    private static class ConstrainedFields {
+
+        private final ConstraintDescriptions constraintDescriptions;
+
+        ConstrainedFields(Class<?> input) {
+            this.constraintDescriptions = new ConstraintDescriptions(input);
+        }
+
+        private FieldDescriptor withPath(String path) {
+            return PayloadDocumentation.fieldWithPath(path).attributes(Attributes.key("constraints").value(StringUtils
+                .collectionToDelimitedString(this.constraintDescriptions
+                    .descriptionsForProperty(path), ". ")));
+        }
+
     }
 
 }
