@@ -37,7 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 //autoconfiguration REST docs for us
 @ExtendWith(value = RestDocumentationExtension.class) //we need to add SpringExtension as well, but this is done int @WebMvcTest
-@AutoConfigureRestDocs
+//here we change default configuration for @AutoConfigureRestDocs
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = "dev.someserver", uriPort = 80)
 @WebMvcTest(controllers = BeerController.class)
 @ComponentScan(value = "pl.kukla.krzys.testing.restdocs.web.mapper")
 class BeerControllerTest {
