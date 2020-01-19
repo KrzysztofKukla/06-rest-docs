@@ -63,7 +63,8 @@ class BeerControllerTest {
             .param("isCold", "yes")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
-            .andDo(MockMvcRestDocumentation.document("v1/beer",
+            //document needs to have unique name, otherwise will be override
+            .andDo(MockMvcRestDocumentation.document("v1/beer-get",
                 RequestDocumentation.pathParameters(
                     RequestDocumentation.parameterWithName("beerId").description("UUID of desired beer to get")
                 ),
@@ -99,7 +100,8 @@ class BeerControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(beerDtoJson))
             .andExpect(status().isCreated())
-            .andDo(MockMvcRestDocumentation.document("v1/beer",
+            //document needs to have unique name, otherwise will be override
+            .andDo(MockMvcRestDocumentation.document("v1/beer-new",
                 PayloadDocumentation.requestFields(
                     //and again we need to pass all required fields for BeerDto or explicitly specify field to be ignored
                     //four fields are specified as ignored, API users should never send those
