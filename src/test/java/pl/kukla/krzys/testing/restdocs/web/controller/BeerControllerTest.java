@@ -143,7 +143,7 @@ class BeerControllerTest {
             .build();
     }
 
-    //we added 'constraints' to 'test/resources/org/springframework/restdocs/templates/request-fields.snippet' file
+    //we added 'constraints' field to 'test/resources/org/springframework/restdocs/templates/request-fields.snippet' file
     //so we need to specify that field here
     private static class ConstrainedFields {
 

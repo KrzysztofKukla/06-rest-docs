@@ -163,7 +163,8 @@
 				</dependencies>
 			</plugin>
 
-			<!-- this plugin allows to copy docs resources to another directory -->
+			<!-- this plugin allows to copy docs resources from 'generated-docs' directory to 'static/docs' directory like below defined -->
+			<!-- created .jar file includes all classes - /target/classes, so 'static/docs/index.html will be there as well -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.7</version>
