@@ -131,15 +131,15 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<!-- in this plugin tests will generate snippets and then these snippets will be
-				assemble in single html	document  -->
+				<!-- this plugin generates snippets and then these snippets are assembled ( gromadzone ) in single html	document
+				this plugin will be call before 'package goal'-->
 				<groupId>org.asciidoctor</groupId>
 				<artifactId>asciidoctor-maven-plugin</artifactId>
 				<version>1.5.3</version>
 				<executions>
 					<execution>
 						<id>generate-docs</id>
-						<!-- it means that it will be run before 'package' goal in maven  -->
+						<!-- it means, this plugin will be run before 'package' goal/phase in maven  -->
 						<phase>prepare-package</phase>
 						<goals>
 							<!-- this is asciidoctor goal -->
@@ -156,8 +156,7 @@
 						<!-- this dependency works in conjunction with this asciidoctor plugin -->
 						<groupId>org.springframework.restdocs</groupId>
 						<artifactId>spring-restdocs-asciidoctor</artifactId>
-						<!--this version is not setup explicitly,
-						 it will be being set in spring-boot parent pom above -->
+						<!--this version is inherited from parent pom and will be apply for dependency in this project for 'spring-restdocs-mockmvc'-->
 						<version>${spring-restdocs.version}</version>
 					</dependency>
 				</dependencies>
@@ -176,13 +175,15 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
+							<!-- to be able publish spring-docs documentation we need to provide 'index.html' into '/target/classes...' -->
+							<!-- here we place 'index.html' file into '/target/classes/static/docs' -->
 							<outputDirectory>
 								${project.build.outputDirectory}/static/docs
 							</outputDirectory>
 							<resources>
 								<resource>
 									<directory>
-										<!-- plugin will copy docs from this directory to 'outputDirectory' -->
+										<!-- plugin will copy 'index.html' file from '/target/generated-docs/' folder into '<outputDirectory>' -->
 										${project.build.directory}/generated-docs
 									</directory>
 								</resource>

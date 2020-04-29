@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * @author Krzysztof Kukla
  */
-//autoconfiguration REST docs for us
+//this makes autoconfiguration REST docs for us
 @ExtendWith(value = RestDocumentationExtension.class) //we need to add SpringExtension as well, but this is done int @WebMvcTest
 //here we change default configuration for @AutoConfigureRestDocs
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "dev.someserver", uriPort = 80)
@@ -66,13 +66,14 @@ class BeerControllerTest {
             //document needs to have unique name, otherwise will be override
             .andDo(MockMvcRestDocumentation.document("v1/beer-get",
                 RequestDocumentation.pathParameters(
-                    RequestDocumentation.parameterWithName("beerId").description("UUID of desired beer to get")
+                    RequestDocumentation.parameterWithName("beerId").description("UUID of desired beer to get") //this 'beerId' need to be included
+                    // in uri "/api/v1/beer/{beerId}/"
                 ),
                 RequestDocumentation.requestParameters(
                     RequestDocumentation.parameterWithName("isCold").description("Is beer cold query param?")
                 ),
                 //in response we will receive whole BeerDto object which contains id, version, createdDate etc. parameters
-                //to make this test passed, we need to specify all parameters for BeerDto
+                //all fields need to be specifiy - to make this test passed, we need to specify all parameters for BeerDto
                 PayloadDocumentation.responseFields(
                     PayloadDocumentation.fieldWithPath("id").description("Id of beer"),
                     PayloadDocumentation.fieldWithPath("version").description("version of beer"),
@@ -94,6 +95,8 @@ class BeerControllerTest {
         BeerDto beerDto = createBeerDto();
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
 
+        //'constraints' field from 'test/resources/org/springframework/restdocs/templates/request-fields.snippet' file
+        //this 'constraints' have to be configured since we added 'constraints' into 'request-fields.snippet' file
         ConstrainedFields fields = new ConstrainedFields(BeerDto.class);
 
         mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/beer/")
